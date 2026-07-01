@@ -8,30 +8,91 @@
 <body>
 
 <header>
-    <h1>🍟 Đồ ăn nhanh</h1>
+  <h1>🍔 Đồ ăn nhanh</h1>
 
-    <nav>
-        <a href="../menu/menu.html">Trang chủ</a>
-        <a href="../fastfood/fastfood.html">Đồ ăn nhanh</a>
-        <a href="../family/family.html">Đồ ăn gia đình</a>
-    </nav>
+  <nav>
+    <a href="../menu/menu.html">Trang chủ</a>
+    <a href="../fastfood/fastfood.html">Đồ ăn nhanh</a>
+    <a href="../family/family.html">Đồ ăn gia đình</a>
+  </nav>
 </header>
 
 <section class="food">
 
-<div class="card">
-<img src="https://images.unsplash.com/photo-1600891964092-4316c288032e">
-<h3>Burger</h3>
-<p>45.000đ</p>
-</div>
+  <div class="card">
+    <img src="https://images.unsplash.com/photo-1600891964092-4316c288032e?auto=format&fit=crop&w=500&q=80">
+    <h3>Bít tết</h3>
+    <p>45.000đ</p>
+    <button onclick="add('Bít tết',45000)">Thêm món</button>
+  </div>
 
-<div class="card">
-<img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38">
-<h3>Pizza</h3>
-<p>120.000đ</p>
-</div>
+  <div class="card">
+    <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=500&q=80">
+    <h3>Bún đậu</h3>
+    <p>120.000đ</p>
+    <button onclick="add('Bún đậu',120000)">Thêm món</button>
+  </div>
+
+  <!-- MÓN MỚI 1 -->
+  <div class="card">
+    <img src="https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=500&q=80">
+    <h3>Hamburger gà</h3>
+    <p>55.000đ</p>
+    <button onclick="add('Hamburger gà',55000)">Thêm món</button>
+  </div>
+
+  <!-- MÓN MỚI 2 -->
+  <div class="card">
+    <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=500&q=80">
+    <h3>burger bò</h3>
+    <p>30.000đ</p>
+    <button onclick="add('burger bò',30000)">Thêm món</button>
+  </div>
 
 </section>
+
+<!-- GIỎ HÀNG -->
+<div class="cart">
+
+  <h2>🛒 Giỏ hàng</h2>
+
+  <ul id="list"></ul>
+
+  <h3>Tổng tiền: <span id="total">0</span> đ</h3>
+
+  <button onclick="order()">Đặt món</button>
+
+</div>
+
+<script>
+let total = 0;
+
+function add(name, price){
+
+  let li = document.createElement("li");
+  li.innerHTML = name + " - " + price.toLocaleString() + "đ";
+
+  document.getElementById("list").appendChild(li);
+
+  total += price;
+
+  document.getElementById("total").innerHTML = total.toLocaleString();
+}
+
+function order(){
+
+  if(total == 0){
+    alert("Bạn chưa chọn món!");
+    return;
+  }
+
+  alert("Đặt món thành công 🎉");
+
+  document.getElementById("list").innerHTML = "";
+  document.getElementById("total").innerHTML = "0";
+  total = 0;
+}
+</script>
 
 </body>
 </html>

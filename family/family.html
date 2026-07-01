@@ -19,19 +19,80 @@
 
 <section class="food">
 
-<div class="card">
-<img src="https://images.unsplash.com/photo-1604908177522-0401a9c3d6b2">
-<h3>Cơm gia đình</h3>
-<p>90.000đ</p>
-</div>
+    <div class="card">
+        <img src="https://images.unsplash.com/photo-1604908177522-0401a9c3d6b2?auto=format&fit=crop&w=500&q=80">
+        <h3>Cơm gia đình</h3>
+        <p>90.000đ</p>
+        <button onclick="add('Cơm gia đình',90000)">Thêm món</button>
+    </div>
 
-<div class="card">
-<img src="https://images.unsplash.com/photo-1606756790138-261d2b21cd75">
-<h3>Canh thịt</h3>
-<p>60.000đ</p>
-</div>
+    <div class="card">
+        <img src="https://images.unsplash.com/photo-1606756790138-261d2b21cd75?auto=format&fit=crop&w=500&q=80">
+        <h3>Canh thịt</h3>
+        <p>60.000đ</p>
+        <button onclick="add('Canh thịt',60000)">Thêm món</button>
+    </div>
+
+    <!-- MÓN MỚI 1 -->
+    <div class="card">
+        <img src="https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=500&q=80">
+        <h3>Cá kho tộ</h3>
+        <p>75.000đ</p>
+        <button onclick="add('Cá kho tộ',75000)">Thêm món</button>
+    </div>
+
+    <!-- MÓN MỚI 2 -->
+    <div class="card">
+        <img src="https://images.unsplash.com/photo-1605478371310-a9f1c6b0a0d6?auto=format&fit=crop&w=500&q=80">
+        <h3>Thịt kho trứng</h3>
+        <p>85.000đ</p>
+        <button onclick="add('Thịt kho trứng',85000)">Thêm món</button>
+    </div>
 
 </section>
+
+<!-- GIỎ HÀNG -->
+<div class="cart">
+
+    <h2>🛒 Giỏ hàng</h2>
+
+    <ul id="list"></ul>
+
+    <h3>Tổng tiền: <span id="total">0</span> đ</h3>
+
+    <button onclick="order()">Đặt món</button>
+
+</div>
+
+<script>
+let total = 0;
+
+function add(name, price){
+
+    let li = document.createElement("li");
+    li.innerHTML = name + " - " + price.toLocaleString() + "đ";
+
+    document.getElementById("list").appendChild(li);
+
+    total += price;
+
+    document.getElementById("total").innerHTML = total.toLocaleString();
+}
+
+function order(){
+
+    if(total == 0){
+        alert("Bạn chưa chọn món!");
+        return;
+    }
+
+    alert("Đặt món thành công 🎉");
+
+    document.getElementById("list").innerHTML = "";
+    document.getElementById("total").innerHTML = "0";
+    total = 0;
+}
+</script>
 
 </body>
 </html>
