@@ -10,14 +10,48 @@
 <div class="box">
   <h2>🍔 Đăng nhập</h2>
 
-  <input type="text" placeholder="Tên đăng nhập">
-  <input type="password" placeholder="Mật khẩu">
+  <input type="text" id="username" placeholder="Tên đăng nhập">
+  <input type="password" id="password" placeholder="Mật khẩu">
 
-  <button>Đăng nhập</button>
+  <button onclick="login()">Đăng nhập</button>
 
   <p>Bạn chưa có tài khoản?</p>
-  <a href="../regiter/register.html">👉 Đăng ký ngay</a>
+  <a href="../register/register.html">👉 Đăng ký ngay</a>
 </div>
+
+<script>
+function login() {
+
+    const username = document.getElementById("username").value.trim();
+    const password = document.getElementById("password").value;
+
+    // Lấy tài khoản đã đăng ký
+    const account = JSON.parse(localStorage.getItem("account"));
+
+    if (account === null) {
+        alert("Chưa có tài khoản. Vui lòng đăng ký!");
+        return;
+    }
+
+    // Kiểm tra tài khoản và mật khẩu
+    if (username === account.username && password === account.password) {
+
+        // Đánh dấu đã đăng nhập
+        localStorage.setItem("isLogin", "true");
+
+        alert("Đăng nhập thành công!");
+
+        // Chuyển sang trang chủ
+        window.location.href = "../menu/menu.html";
+
+    } else {
+
+        alert("Sai tên đăng nhập hoặc mật khẩu!");
+
+    }
+
+}
+</script>
 
 </body>
 </html>
