@@ -1,51 +1,163 @@
 <!DOCTYPE html>
 <html lang="vi">
-<head>
-<meta charset="UTF-8">
-<title>Food Shop</title>
-<link rel="stylesheet" href="menu.css">
-</head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FoodHub - Dashboard</title>
+    <link rel="stylesheet" href="menu.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="logo" href="menu.html">FoodHub</a>
 
-<body>
-
-<header>
-    <h1>🍔 Food Shop</h1>
-
-    <nav>
-        <a href="../menu/menu.html">Trang chủ</a>
+      <nav class="main-nav">
+        <a class="active" href="../menu/menu.html">Trang chủ</a>
         <a href="../fastfood/fastfood.html">Đồ ăn nhanh</a>
         <a href="../family/family.html">Đồ ăn gia đình</a>
-    </nav>
-</header>
+      </nav>
 
-<section class="banner">
-    <div class="box">
-        <h2>Chào mừng đến Food Shop</h2>
-        <p>Đồ ăn ngon - Giao nhanh tận nơi 🚀</p>
+      <a id="authLink" class="login-link" href="../login/login.html">Đăng nhập</a>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero-content">
+          <p class="eyebrow">Giao món trong 30 phút</p>
+          <h1>Món ngon mỗi ngày, đặt nhanh trong vài lần bấm</h1>
+          <p>
+            Chọn món theo danh mục, thêm vào giỏ hàng và kiểm tra tổng tiền
+            ngay trên dashboard.
+          </p>
+
+          <div class="search-box">
+            <input
+              id="searchInput"
+              type="search"
+              placeholder="Tìm món: burger, cơm, trà sữa..."
+              autocomplete="off"
+            />
+            <select id="sortSelect" aria-label="Sắp xếp món ăn">
+              <option value="popular">Phổ biến</option>
+              <option value="price-asc">Giá thấp đến cao</option>
+              <option value="price-desc">Giá cao đến thấp</option>
+              <option value="rating">Đánh giá cao</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <section class="stats">
+        <article>
+          <strong>36+</strong>
+          <span>Món đang bán</span>
+        </article>
+        <article>
+          <strong>8</strong>
+          <span>Danh mục</span>
+        </article>
+        <article>
+          <strong>4.8/5</strong>
+          <span>Đánh giá trung bình</span>
+        </article>
+      </section>
+
+      <section class="dashboard">
+        <aside class="sidebar">
+          <div class="panel">
+            <h2>Danh mục</h2>
+            <div id="categoryList" class="category-list"></div>
+          </div>
+
+          <div class="panel">
+            <h2>Ưu đãi hôm nay</h2>
+            <div class="deal">
+              <span>Giảm 15%</span>
+              <p>Cho đơn từ 150.000đ trong khung giờ trưa.</p>
+            </div>
+          </div>
+        </aside>
+
+        <section class="products">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Thực đơn</p>
+              <h2 id="categoryTitle">Tất cả món ăn</h2>
+            </div>
+            <span id="resultCount">Đang tải...</span>
+          </div>
+
+          <div id="loading" class="loading">
+            <span class="spinner"></span>
+            <p>Đang lấy dữ liệu món ăn...</p>
+          </div>
+
+          <div id="foodsContainer" class="food-grid"></div>
+          <p id="emptyMessage" class="empty-message">Không tìm thấy món phù hợp.</p>
+        </section>
+
+        <aside class="cart-panel">
+          <div class="panel cart">
+            <h2>Giỏ hàng</h2>
+            <div id="cartItems" class="cart-items"></div>
+
+            <div class="cart-total">
+              <span>Tổng tiền</span>
+              <strong id="cartTotal">0đ</strong>
+            </div>
+
+            <label class="note-field">
+              Ghi chú giao hàng
+              <textarea
+                id="orderNote"
+                rows="3"
+                placeholder="Ví dụ: ít cay, gọi trước khi giao..."
+              ></textarea>
+            </label>
+
+            <button id="checkoutBtn" class="primary-btn" type="button">
+              Đặt món
+            </button>
+          </div>
+        </aside>
+      </section>
+    </main>
+
+    <footer>
+      <p>© 2026 FoodHub. Sản phẩm cuối khoá HTML, CSS và JavaScript thuần.</p>
+    </footer>
+
+    <div id="toast" class="toast"></div>
+
+    <div id="orderModal" class="order-modal" aria-hidden="true">
+      <div class="order-dialog" role="dialog" aria-modal="true" aria-labelledby="orderTitle">
+        <button id="closeOrderModal" class="close-modal" type="button" aria-label="Đóng">×</button>
+        <div class="order-icon">✓</div>
+        <p class="eyebrow">Đặt hàng thành công</p>
+        <h2 id="orderTitle">Đơn hàng đang được chuẩn bị</h2>
+        <p id="orderMessage" class="order-message"></p>
+
+        <div class="order-summary">
+          <div>
+            <span>Mã đơn</span>
+            <strong id="orderCode">FH0000</strong>
+          </div>
+          <div>
+            <span>Tổng tiền</span>
+            <strong id="orderTotal">0đ</strong>
+          </div>
+          <div>
+            <span>Dự kiến giao</span>
+            <strong>25 - 30 phút</strong>
+          </div>
+        </div>
+
+        <button id="continueShoppingBtn" class="primary-btn" type="button">
+          Tiếp tục mua hàng
+        </button>
+      </div>
     </div>
-</section>
 
-
-<!-- Khu hiển thị món ăn -->
-<section class="food-list">
-
-    <h2>Món ăn nổi</h2>
-
-    <div id="foods-container">
-
-    </div>
-
-</section>
-
-
-<footer>
-    <p>© 2026 Food Shop</p>
-</footer>
-
-
-<!-- Kết nối dữ liệu -->
-<script src="menu.js"></script>
-<script src="food.js"></script>
-
-</body>
+    <script src="food.js"></script>
+    <script src="menu.js"></script>
+  </body>
 </html>

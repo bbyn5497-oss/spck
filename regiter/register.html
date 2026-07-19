@@ -1,62 +1,88 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
-<head>
-  <meta charset="UTF-8">
-  <title>Register Food Shop</title>
-  <link rel="stylesheet" href="register.css">
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đăng ký - FoodHub</title>
+    <link rel="stylesheet" href="register.css" />
+  </head>
+  <body>
+    <main class="auth-card">
+      <a class="brand" href="../menu/menu.html">FoodHub</a>
+      <h1>Đăng ký</h1>
 
-<div class="box">
-  <h2>🍟 Đăng ký</h2>
+      <label>
+        Tên đăng nhập
+        <input type="text" id="username" placeholder="Ví dụ: trung123" />
+      </label>
 
-  <input type="text" id="username" placeholder="Tên người dùng">
-  <input type="email" id="email" placeholder="Email">
-  <input type="password" id="password" placeholder="Mật khẩu">
-  <input type="password" id="confirmPassword" placeholder="Nhập lại mật khẩu">
+      <label>
+        Email
+        <input type="email" id="email" placeholder="you@example.com" />
+      </label>
 
-  <button onclick="register()">Tạo tài khoản</button>
+      <label>
+        Mật khẩu
+        <input type="password" id="password" placeholder="Tối thiểu 6 ký tự" />
+      </label>
 
-  <p>Bạn đã có tài khoản?</p>
-  <a href="../login/login.html">👉 Đăng nhập</a>
-</div>
+      <label>
+        Nhập lại mật khẩu
+        <input
+          type="password"
+          id="confirmPassword"
+          placeholder="Nhập lại mật khẩu"
+        />
+      </label>
 
-<script>
-function register() {
+      <button id="registerBtn" type="button">Tạo tài khoản</button>
+      <p class="switch-page">
+        Đã có tài khoản?
+        <a href="../login/login.html">Đăng nhập</a>
+      </p>
+    </main>
 
-    const username = document.getElementById("username").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value;
-    const confirmPassword = document.getElementById("confirmPassword").value;
+    <script>
+      const registerBtn = document.getElementById("registerBtn");
 
-    if (username === "" || email === "" || password === "" || confirmPassword === "") {
-        alert("Vui lòng nhập đầy đủ thông tin!");
-        return;
-    }
+      function register() {
+        const username = document.getElementById("username").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value;
+        const confirmPassword =
+          document.getElementById("confirmPassword").value;
 
-    if (password !== confirmPassword) {
-        alert("Mật khẩu nhập lại không khớp!");
-        return;
-    }
+        if (!username || !email || !password || !confirmPassword) {
+          alert("Vui lòng nhập đầy đủ thông tin.");
+          return;
+        }
 
-    const account = {
-        username: username,
-        email: email,
-        password: password
-    };
+        if (!email.includes("@")) {
+          alert("Email chưa đúng định dạng.");
+          return;
+        }
 
-    // Lưu tài khoản
-    localStorage.setItem("account", JSON.stringify(account));
+        if (password.length < 6) {
+          alert("Mật khẩu cần có tối thiểu 6 ký tự.");
+          return;
+        }
 
-    // Chưa đăng nhập
-    localStorage.setItem("isLogin", "false");
+        if (password !== confirmPassword) {
+          alert("Mật khẩu nhập lại không khớp.");
+          return;
+        }
 
-    alert("Đăng ký thành công!");
+        localStorage.setItem(
+          "account",
+          JSON.stringify({ username, email, password }),
+        );
+        localStorage.setItem("isLogin", "false");
 
-    // Chuyển sang trang đăng nhập
-    window.location.href = "../login/login.html";
-}
-</script>
+        alert("Đăng ký thành công!");
+        window.location.href = "../login/login.html";
+      }
 
-</body>
+      registerBtn.addEventListener("click", register);
+    </script>
+  </body>
 </html>

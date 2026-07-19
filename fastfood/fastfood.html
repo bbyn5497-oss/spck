@@ -1,98 +1,216 @@
 <!DOCTYPE html>
 <html lang="vi">
-<head>
-<meta charset="UTF-8">
-<title>Đồ ăn nhanh</title>
-<link rel="stylesheet" href="fastfood.css">
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đồ ăn nhanh - FoodHub</title>
+    <link rel="stylesheet" href="fastfood.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="logo" href="../menu/menu.html">FoodHub</a>
+      <nav>
+        <a href="../menu/menu.html">Trang chủ</a>
+        <a class="active" href="../fastfood/fastfood.html">Đồ ăn nhanh</a>
+        <a href="../family/family.html">Đồ ăn gia đình</a>
+      </nav>
+      <a id="authLink" class="auth-link" href="../login/login.html">Đăng nhập</a>
+    </header>
 
-<header>
-  <h1>🍔 Đồ ăn nhanh</h1>
+    <main class="page">
+      <section class="intro">
+        <p>Đặt nhanh</p>
+        <h1>Đồ ăn nhanh</h1>
+        <span>Burger, pizza, gà rán và các combo tiện lợi.</span>
+      </section>
 
-  <nav>
-    <a href="../menu/menu.html">Trang chủ</a>
-    <a href="../fastfood/fastfood.html">Đồ ăn nhanh</a>
-    <a href="../family/family.html">Đồ ăn gia đình</a>
-  </nav>
-</header>
+      <section class="layout">
+        <div class="food-grid" id="foodGrid"></div>
 
-<section class="food">
+        <aside class="cart">
+          <h2>Giỏ hàng</h2>
+          <div id="cartList" class="cart-list"></div>
+          <div class="total">
+            <span>Tổng tiền</span>
+            <strong id="total">0đ</strong>
+          </div>
+          <button id="orderBtn" type="button">Đặt món</button>
 
-  <div class="card">
-    <img src="https://images.unsplash.com/photo-1600891964092-4316c288032e?auto=format&fit=crop&w=500&q=80">
-    <h3>Bít tết</h3>
-    <p>45.000đ</p>
-    <button onclick="add('Bít tết',45000)">Thêm món</button>
-  </div>
+          <div id="orderSuccess" class="order-success">
+            <span>Đơn hàng đã nhận</span>
+            <strong id="orderCode">FH0000</strong>
+            <p id="orderText">Cửa hàng sẽ chuẩn bị và giao trong 25 - 30 phút.</p>
+          </div>
+        </aside>
+      </section>
+    </main>
 
-  <div class="card">
-    <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=500&q=80">
-    <h3>Bún đậu</h3>
-    <p>120.000đ</p>
-    <button onclick="add('Bún đậu',120000)">Thêm món</button>
-  </div>
+    <script>
+      const foods = [
+        {
+          id: 1,
+          name: "Burger bò",
+          price: 55000,
+          desc: "Bò nướng, phô mai, rau tươi.",
+          image:
+            "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=700&q=80",
+        },
+        {
+          id: 2,
+          name: "Pizza hải sản",
+          price: 125000,
+          desc: "Tôm, mực, phô mai và sốt cà chua.",
+          image:
+            "https://images.unsplash.com/photo-1594007654729-407eedc4be65?auto=format&fit=crop&w=700&q=80",
+        },
+        {
+          id: 3,
+          name: "Gà rán giòn",
+          price: 69000,
+          desc: "Gà nóng giòn, vị cay vừa.",
+          image:
+            "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=700&q=80",
+        },
+        {
+          id: 4,
+          name: "Combo burger",
+          price: 79000,
+          desc: "Burger, khoai tây và nước ngọt.",
+          image:
+            "https://images.unsplash.com/photo-1551782450-a2132b4ba21d?auto=format&fit=crop&w=700&q=80",
+        },
+      ];
 
-  <!-- MÓN MỚI 1 -->
-  <div class="card">
-    <img src="https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=500&q=80">
-    <h3>Hamburger gà</h3>
-    <p>55.000đ</p>
-    <button onclick="add('Hamburger gà',55000)">Thêm món</button>
-  </div>
+      const foodGrid = document.getElementById("foodGrid");
+      const cartList = document.getElementById("cartList");
+      const total = document.getElementById("total");
+      const orderBtn = document.getElementById("orderBtn");
+      const orderSuccess = document.getElementById("orderSuccess");
+      const orderCode = document.getElementById("orderCode");
+      const orderText = document.getElementById("orderText");
+      const authLink = document.getElementById("authLink");
+      let cart = [];
 
-  <!-- MÓN MỚI 2 -->
-  <div class="card">
-    <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=500&q=80">
-    <h3>burger bò</h3>
-    <p>30.000đ</p>
-    <button onclick="add('burger bò',30000)">Thêm món</button>
-  </div>
+      function formatMoney(value) {
+        return value.toLocaleString("vi-VN") + "đ";
+      }
 
-</section>
+      function isLoggedIn() {
+        return localStorage.getItem("isLogin") === "true";
+      }
 
-<!-- GIỎ HÀNG -->
-<div class="cart">
+      function renderAuthLink() {
+        if (isLoggedIn()) {
+          authLink.textContent = "Đăng xuất";
+          authLink.href = "#";
+          authLink.classList.add("logged-in");
+          return;
+        }
 
-  <h2>🛒 Giỏ hàng</h2>
+        authLink.textContent = "Đăng nhập";
+        authLink.href = "../login/login.html";
+        authLink.classList.remove("logged-in");
+      }
 
-  <ul id="list"></ul>
+      function renderFoods() {
+        foodGrid.innerHTML = foods
+          .map(
+            (food) => `
+              <article class="card">
+                <img src="${food.image}" alt="${food.name}" />
+                <div>
+                  <h3>${food.name}</h3>
+                  <p>${food.desc}</p>
+                  <strong>${formatMoney(food.price)}</strong>
+                  <button data-id="${food.id}" type="button">Thêm món</button>
+                </div>
+              </article>
+            `
+          )
+          .join("");
+      }
 
-  <h3>Tổng tiền: <span id="total">0</span> đ</h3>
+      function addToCart(id) {
+        const food = foods.find((item) => item.id === id);
+        const item = cart.find((cartItem) => cartItem.id === id);
 
-  <button onclick="order()">Đặt món</button>
+        if (item) {
+          item.quantity += 1;
+        } else {
+          cart.push({ ...food, quantity: 1 });
+        }
 
-</div>
+        orderSuccess.classList.remove("show");
+        renderCart();
+      }
 
-<script>
-let total = 0;
+      function getCartTotal() {
+        return cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+      }
 
-function add(name, price){
+      function renderCart() {
+        if (cart.length === 0) {
+          cartList.innerHTML = '<p class="empty">Chưa có món nào.</p>';
+          total.textContent = "0đ";
+          return;
+        }
 
-  let li = document.createElement("li");
-  li.innerHTML = name + " - " + price.toLocaleString() + "đ";
+        cartList.innerHTML = cart
+          .map(
+            (item) => `
+              <div class="cart-item">
+                <span>${item.name} x ${item.quantity}</span>
+                <strong>${formatMoney(item.price * item.quantity)}</strong>
+              </div>
+            `
+          )
+          .join("");
 
-  document.getElementById("list").appendChild(li);
+        total.textContent = formatMoney(getCartTotal());
+      }
 
-  total += price;
+      foodGrid.addEventListener("click", (event) => {
+        const button = event.target.closest("button");
+        if (button) addToCart(Number(button.dataset.id));
+      });
 
-  document.getElementById("total").innerHTML = total.toLocaleString();
-}
+      orderBtn.addEventListener("click", () => {
+        if (!isLoggedIn()) {
+          alert("Vui lòng đăng nhập trước khi đặt món.");
+          window.location.href = "../login/login.html";
+          return;
+        }
 
-function order(){
+        if (cart.length === 0) {
+          alert("Vui lòng chọn món trước khi đặt hàng.");
+          return;
+        }
 
-  if(total == 0){
-    alert("Bạn chưa chọn món!");
-    return;
-  }
+        const itemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+        const finalTotal = getCartTotal();
 
-  alert("Đặt món thành công 🎉");
+        orderCode.textContent = `FH${Date.now().toString().slice(-5)}`;
+        orderText.textContent = `Đã đặt ${itemCount} món, tổng ${formatMoney(
+          finalTotal
+        )}. Cửa hàng sẽ giao trong 25 - 30 phút.`;
+        orderSuccess.classList.add("show");
 
-  document.getElementById("list").innerHTML = "";
-  document.getElementById("total").innerHTML = "0";
-  total = 0;
-}
-</script>
+        cart = [];
+        renderCart();
+      });
 
-</body>
+      authLink.addEventListener("click", (event) => {
+        if (!isLoggedIn()) return;
+
+        event.preventDefault();
+        localStorage.setItem("isLogin", "false");
+        renderAuthLink();
+        orderSuccess.classList.remove("show");
+      });
+
+      renderAuthLink();
+      renderFoods();
+      renderCart();
+    </script>
+  </body>
 </html>

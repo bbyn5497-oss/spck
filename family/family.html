@@ -1,98 +1,216 @@
 <!DOCTYPE html>
 <html lang="vi">
-<head>
-<meta charset="UTF-8">
-<title>Đồ ăn gia đình</title>
-<link rel="stylesheet" href="family.css">
-</head>
-<body>
-
-<header>
-    <h1>🍲 Đồ ăn gia đình</h1>
-
-    <nav>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đồ ăn gia đình - FoodHub</title>
+    <link rel="stylesheet" href="family.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="logo" href="../menu/menu.html">FoodHub</a>
+      <nav>
         <a href="../menu/menu.html">Trang chủ</a>
         <a href="../fastfood/fastfood.html">Đồ ăn nhanh</a>
-        <a href="../family/family.html">Đồ ăn gia đình</a>
-    </nav>
-</header>
+        <a class="active" href="../family/family.html">Đồ ăn gia đình</a>
+      </nav>
+      <a id="authLink" class="auth-link" href="../login/login.html">Đăng nhập</a>
+    </header>
 
-<section class="food">
+    <main class="page">
+      <section class="intro">
+        <p>Bữa cơm ấm áp</p>
+        <h1>Đồ ăn gia đình</h1>
+        <span>Các món mặn, canh và combo phù hợp cho bữa ăn nhiều người.</span>
+      </section>
 
-    <div class="card">
-        <img src="https://images.unsplash.com/photo-1604908177522-0401a9c3d6b2?auto=format&fit=crop&w=500&q=80">
-        <h3>Cơm gia đình</h3>
-        <p>90.000đ</p>
-        <button onclick="add('Cơm gia đình',90000)">Thêm món</button>
-    </div>
+      <section class="layout">
+        <div class="food-grid" id="foodGrid"></div>
 
-    <div class="card">
-        <img src="https://images.unsplash.com/photo-1606756790138-261d2b21cd75?auto=format&fit=crop&w=500&q=80">
-        <h3>Canh thịt</h3>
-        <p>60.000đ</p>
-        <button onclick="add('Canh thịt',60000)">Thêm món</button>
-    </div>
+        <aside class="cart">
+          <h2>Giỏ hàng</h2>
+          <div id="cartList" class="cart-list"></div>
+          <div class="total">
+            <span>Tổng tiền</span>
+            <strong id="total">0đ</strong>
+          </div>
+          <button id="orderBtn" type="button">Đặt món</button>
 
-    <!-- MÓN MỚI 1 -->
-    <div class="card">
-        <img src="https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=500&q=80">
-        <h3>Cá kho tộ</h3>
-        <p>75.000đ</p>
-        <button onclick="add('Cá kho tộ',75000)">Thêm món</button>
-    </div>
+          <div id="orderSuccess" class="order-success">
+            <span>Đơn hàng đã nhận</span>
+            <strong id="orderCode">FH0000</strong>
+            <p id="orderText">Cửa hàng sẽ chuẩn bị và giao trong 25 - 30 phút.</p>
+          </div>
+        </aside>
+      </section>
+    </main>
 
-    <!-- MÓN MỚI 2 -->
-    <div class="card">
-        <img src="https://images.unsplash.com/photo-1605478371310-a9f1c6b0a0d6?auto=format&fit=crop&w=500&q=80">
-        <h3>Thịt kho trứng</h3>
-        <p>85.000đ</p>
-        <button onclick="add('Thịt kho trứng',85000)">Thêm món</button>
-    </div>
+    <script>
+      const foods = [
+        {
+          id: 1,
+          name: "Cơm gia đình 3 món",
+          price: 149000,
+          desc: "Cơm trắng, món mặn, món xào và canh.",
+          image:
+            "https://images.unsplash.com/photo-1543353071-10c8ba85a904?auto=format&fit=crop&w=700&q=80",
+        },
+        {
+          id: 2,
+          name: "Cá kho tộ",
+          price: 79000,
+          desc: "Cá kho tiêu, nước sốt sánh và đậm vị.",
+          image:
+            "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=700&q=80",
+        },
+        {
+          id: 3,
+          name: "Thịt kho trứng",
+          price: 85000,
+          desc: "Thịt mềm, trứng béo và nước kho thơm.",
+          image:
+            "https://images.unsplash.com/photo-1604908177453-7462950a6a3b?auto=format&fit=crop&w=700&q=80",
+        },
+        {
+          id: 4,
+          name: "Canh rau củ",
+          price: 52000,
+          desc: "Rau củ tươi, nước canh thanh nhẹ.",
+          image:
+            "https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=700&q=80",
+        },
+      ];
 
-</section>
+      const foodGrid = document.getElementById("foodGrid");
+      const cartList = document.getElementById("cartList");
+      const total = document.getElementById("total");
+      const orderBtn = document.getElementById("orderBtn");
+      const orderSuccess = document.getElementById("orderSuccess");
+      const orderCode = document.getElementById("orderCode");
+      const orderText = document.getElementById("orderText");
+      const authLink = document.getElementById("authLink");
+      let cart = [];
 
-<!-- GIỎ HÀNG -->
-<div class="cart">
+      function formatMoney(value) {
+        return value.toLocaleString("vi-VN") + "đ";
+      }
 
-    <h2>🛒 Giỏ hàng</h2>
+      function isLoggedIn() {
+        return localStorage.getItem("isLogin") === "true";
+      }
 
-    <ul id="list"></ul>
+      function renderAuthLink() {
+        if (isLoggedIn()) {
+          authLink.textContent = "Đăng xuất";
+          authLink.href = "#";
+          authLink.classList.add("logged-in");
+          return;
+        }
 
-    <h3>Tổng tiền: <span id="total">0</span> đ</h3>
+        authLink.textContent = "Đăng nhập";
+        authLink.href = "../login/login.html";
+        authLink.classList.remove("logged-in");
+      }
 
-    <button onclick="order()">Đặt món</button>
+      function renderFoods() {
+        foodGrid.innerHTML = foods
+          .map(
+            (food) => `
+              <article class="card">
+                <img src="${food.image}" alt="${food.name}" />
+                <div>
+                  <h3>${food.name}</h3>
+                  <p>${food.desc}</p>
+                  <strong>${formatMoney(food.price)}</strong>
+                  <button data-id="${food.id}" type="button">Thêm món</button>
+                </div>
+              </article>
+            `
+          )
+          .join("");
+      }
 
-</div>
+      function addToCart(id) {
+        const food = foods.find((item) => item.id === id);
+        const item = cart.find((cartItem) => cartItem.id === id);
 
-<script>
-let total = 0;
+        if (item) {
+          item.quantity += 1;
+        } else {
+          cart.push({ ...food, quantity: 1 });
+        }
 
-function add(name, price){
+        orderSuccess.classList.remove("show");
+        renderCart();
+      }
 
-    let li = document.createElement("li");
-    li.innerHTML = name + " - " + price.toLocaleString() + "đ";
+      function getCartTotal() {
+        return cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+      }
 
-    document.getElementById("list").appendChild(li);
+      function renderCart() {
+        if (cart.length === 0) {
+          cartList.innerHTML = '<p class="empty">Chưa có món nào.</p>';
+          total.textContent = "0đ";
+          return;
+        }
 
-    total += price;
+        cartList.innerHTML = cart
+          .map(
+            (item) => `
+              <div class="cart-item">
+                <span>${item.name} x ${item.quantity}</span>
+                <strong>${formatMoney(item.price * item.quantity)}</strong>
+              </div>
+            `
+          )
+          .join("");
 
-    document.getElementById("total").innerHTML = total.toLocaleString();
-}
+        total.textContent = formatMoney(getCartTotal());
+      }
 
-function order(){
+      foodGrid.addEventListener("click", (event) => {
+        const button = event.target.closest("button");
+        if (button) addToCart(Number(button.dataset.id));
+      });
 
-    if(total == 0){
-        alert("Bạn chưa chọn món!");
-        return;
-    }
+      orderBtn.addEventListener("click", () => {
+        if (!isLoggedIn()) {
+          alert("Vui lòng đăng nhập trước khi đặt món.");
+          window.location.href = "../login/login.html";
+          return;
+        }
 
-    alert("Đặt món thành công 🎉");
+        if (cart.length === 0) {
+          alert("Vui lòng chọn món trước khi đặt hàng.");
+          return;
+        }
 
-    document.getElementById("list").innerHTML = "";
-    document.getElementById("total").innerHTML = "0";
-    total = 0;
-}
-</script>
+        const itemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+        const finalTotal = getCartTotal();
 
-</body>
+        orderCode.textContent = `FH${Date.now().toString().slice(-5)}`;
+        orderText.textContent = `Đã đặt ${itemCount} món, tổng ${formatMoney(
+          finalTotal
+        )}. Cửa hàng sẽ giao trong 25 - 30 phút.`;
+        orderSuccess.classList.add("show");
+
+        cart = [];
+        renderCart();
+      });
+
+      authLink.addEventListener("click", (event) => {
+        if (!isLoggedIn()) return;
+
+        event.preventDefault();
+        localStorage.setItem("isLogin", "false");
+        renderAuthLink();
+        orderSuccess.classList.remove("show");
+      });
+
+      renderAuthLink();
+      renderFoods();
+      renderCart();
+    </script>
+  </body>
 </html>
